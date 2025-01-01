@@ -1,5 +1,5 @@
 async function initServiceWorker() {
-    let swRegistration = await navigator.serviceWorker.register('https://andreinwald.github.io/webpush-ios-example/serviceworker.js', {scope: '/webpush-ios-example/'})
+    let swRegistration = await navigator.serviceWorker.register('/serviceworker.js')
     let pushManager = swRegistration.pushManager;
 
     if (!isPushManagerActive(pushManager)) {
@@ -7,11 +7,15 @@ async function initServiceWorker() {
     }
 
     let permissionState = await pushManager.permissionState({userVisibleOnly: true});
+    // let permissionState = await Notification.requestPermission();
+
     switch (permissionState) {
         case 'prompt':
             document.getElementById('subscribe_btn').style.display = 'block';
             break;
         case 'granted':
+            // document.getElementById('subscribe_btn').style.display = 'block';
+
             displaySubscriptionInfo(await pushManager.getSubscription())
             break;
         case 'denied':
@@ -24,6 +28,7 @@ async function initServiceWorker() {
 function isPushManagerActive(pushManager) {
     if (!pushManager) {
         if (!window.navigator.standalone) {
+            alert('PushManager is not active. Please, add this site to home screen');
             document.getElementById('add-to-home-screen').style.display = 'block';
         } else {
             throw new Error('PushManager is not active');
@@ -38,7 +43,7 @@ function isPushManagerActive(pushManager) {
 async function subscribeToPush() {
     // Public part of VAPID key, generation of that covered in README
     // All subscription tokens associated with that key, so if you change it - you may lose old subscribers
-    const VAPID_PUBLIC_KEY = 'BAwUJxIa7mJZMqu78Tfy2Sb1BWnYiAatFCe1cxpnM-hxNtXjAwaNKz1QKLU8IYYhjUASOFzSvSnMgC00vfsU0IM';
+    const VAPID_PUBLIC_KEY = 'BF-abOKwdT3zPB_w1EOxyXqgiET5q1i8d-IeYBQrxFyAMmOEZ6k9q_huGGMNf-C4Q2sNlEXmdK_DnENpiBclAaY';
 
     let swRegistration = await navigator.serviceWorker.getRegistration();
     let pushManager = swRegistration.pushManager;
@@ -65,6 +70,7 @@ function displaySubscriptionInfo(subscription) {
     document.getElementById('active_sub').innerHTML = '<b>Active subscription:</b><br><br>'
         + JSON.stringify(subscription.toJSON());
     document.getElementById('test_send_btn').style.display = 'block';
+    console.log('Subscription:', subscription.toJSON());
 }
 
 function testSend() {
@@ -87,6 +93,9 @@ if ((new URLSearchParams(window.location.search)).get('page') === 'success') {
     document.getElementById('content').innerHTML = 'You successfully opened page from WebPush! (this url was that was set in json data param)';
 }
 
+// alert('ServiceWorker is supported ----');
+navigator.serviceWorker.register('/serviceworker.js');
 if (navigator.serviceWorker) {
+    // alert('ServiceWorker is supported');
     initServiceWorker();
 }
