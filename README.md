@@ -197,6 +197,13 @@ navigator.serviceWorker.ready.then(function (serviceWorker) {
 });
 ```
 
+## Running 
+```
+ngrok http http://127.0.0.1:8080
+npx http-server
+node backend-sender.js
+```
+
 Or from **Backend**, for example by using **Node.js** [web-push library](https://github.com/web-push-libs/web-push) <br> 
 See example in [backend-sender.js](/backend-sender.js)
 
