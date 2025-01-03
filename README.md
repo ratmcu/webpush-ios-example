@@ -199,8 +199,9 @@ navigator.serviceWorker.ready.then(function (serviceWorker) {
 
 ## Running 
 ```
-ngrok http http://127.0.0.1:8080
 npx http-server
+ngrok http http://127.0.0.1:8080
+# grab the token and add it to backend-sender.js and run it to push a notification
 node backend-sender.js
 ```
 
